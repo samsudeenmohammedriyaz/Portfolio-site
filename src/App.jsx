@@ -46,6 +46,7 @@ export default function App() {
   const sections = ['home', 'about', 'skills', 'experience', 'projects', 'achievements', 'contact'];
   const [scrollY, setScrollY] = useState(0);
   const [activeSection, setActiveSection] = useState('home');
+  const [menuOpen, setMenuOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 80, damping: 25, restDelta: 0.001 });
 
@@ -64,7 +65,10 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    setMenuOpen(false);
+  };
 
   const skills = [
     { category: 'Languages', icon: '⟨/⟩', items: ['Java', 'JavaScript', 'Python'] },
@@ -134,6 +138,10 @@ export default function App() {
         .nav-item::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px; background: #2563EB; transition: width 0.25s ease; border-radius: 1px; }
         .nav-item.active::after, .nav-item:hover::after { width: 100%; }
 
+        .mobile-nav-item { background: none; border: none; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 500; color: #374151; padding: 14px 0; width: 100%; text-align: left; border-bottom: 1px solid #F3F4F6; transition: color 0.2s; letter-spacing: 0.04em; }
+        .mobile-nav-item:hover, .mobile-nav-item.active { color: #2563EB; }
+        .mobile-nav-item:last-child { border-bottom: none; }
+
         .card { background: #fff; border: 1px solid #EBEBEB; border-radius: 16px; transition: border-color 0.25s ease, box-shadow 0.25s ease; }
         .card:hover { border-color: #C7D7FD; box-shadow: 0 8px 32px rgba(37,99,235,0.07); }
 
@@ -169,6 +177,75 @@ export default function App() {
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 99px; }
         footer { border-top: 1px solid #EBEBEB; }
+
+        /* ── RESPONSIVE STYLES ── */
+
+        /* Desktop nav hidden on mobile, hamburger shown */
+        .desktop-nav { display: flex; gap: 32px; align-items: center; }
+        .hamburger-btn { display: none; background: none; border: 1.5px solid #E5E7EB; border-radius: 9px; padding: 7px 9px; cursor: pointer; color: #374151; transition: all 0.2s; }
+        .hamburger-btn:hover { border-color: #2563EB; color: #2563EB; }
+
+        /* Mobile menu overlay */
+        .mobile-menu { display: none; position: fixed; top: 60px; left: 0; right: 0; background: rgba(250,250,250,0.97); backdrop-filter: blur(20px); border-bottom: 1px solid #EBEBEB; z-index: 49; padding: 8px 24px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+        .mobile-menu.open { display: block; }
+
+        /* About grid */
+        .about-grid { display: grid; grid-template-columns: 1fr 240px; gap: 14px; align-items: stretch; }
+        /* Skills grid */
+        .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        /* Projects grid */
+        .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        /* Achievements grid */
+        .achievements-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        /* Contact cards grid */
+        .contact-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+        /* Footer inner */
+        .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        /* Hero info pills */
+        .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
+        /* Hero CTA buttons */
+        .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+        /* Experience header */
+        .exp-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 26px; flex-wrap: wrap; }
+
+        /* ── TABLET (≤ 900px) ── */
+        @media (max-width: 900px) {
+          html { font-size: 18px; }
+          .desktop-nav { display: none; }
+          .hamburger-btn { display: flex; align-items: center; justify-content: center; }
+          .about-grid { grid-template-columns: 1fr; }
+          .skills-grid { grid-template-columns: repeat(2, 1fr); }
+          .projects-grid { grid-template-columns: repeat(2, 1fr); }
+          .achievements-grid { grid-template-columns: 1fr 1fr; }
+          .contact-cards-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* ── MOBILE (≤ 600px) ── */
+        @media (max-width: 600px) {
+          html { font-size: 16px; }
+          .skills-grid { grid-template-columns: 1fr; }
+          .projects-grid { grid-template-columns: 1fr; }
+          .achievements-grid { grid-template-columns: 1fr; }
+          .contact-cards-grid { grid-template-columns: 1fr; }
+          .hero-pills { flex-direction: column; align-items: center; }
+          .hero-ctas { flex-direction: column; align-items: center; width: 100%; }
+          .hero-ctas > * { width: 100%; justify-content: center; }
+          .exp-header { flex-direction: column; gap: 10px; }
+          .footer-inner { flex-direction: column; align-items: flex-start; }
+          .section-pad { padding: 72px 20px !important; }
+          .hero-pad { padding: 100px 20px 72px !important; }
+          .nav-pad { padding: 0 20px !important; }
+          .about-pad { padding: 72px 20px !important; }
+          .period-badge { font-size: 10.5px; }
+        }
+
+        /* ── SMALL MOBILE (≤ 400px) ── */
+        @media (max-width: 400px) {
+          html { font-size: 15px; }
+          .btn-gh, .btn-outline, .btn-resume { padding: 10px 18px; font-size: 12.5px; }
+          .contact-cards-grid { grid-template-columns: 1fr; }
+        }
       `}</style>
 
       {/* Progress bar */}
@@ -186,13 +263,15 @@ export default function App() {
           borderBottom: navScrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent',
           transition: 'all 0.4s ease',
         }}>
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 40px', height: 60, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="nav-pad" style={{ maxWidth: 1160, margin: '0 auto', padding: '0 40px', height: 60, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <motion.button
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={() => scrollTo('home')}
             style={{ display: 'flex', alignItems: 'center', gap: 9, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           </motion.button>
-          <nav style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+
+          {/* Desktop nav */}
+          <nav className="desktop-nav">
             {sections.map((s, i) => (
               <motion.button key={s} onClick={() => scrollTo(s)}
                 className={`nav-item${activeSection === s ? ' active' : ''}`}
@@ -203,14 +282,32 @@ export default function App() {
               </motion.button>
             ))}
           </nav>
+
+          {/* Hamburger */}
+          <button className="hamburger-btn" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">
+            {menuOpen
+              ? <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              : <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            }
+          </button>
+        </div>
+
+        {/* Mobile dropdown menu */}
+        <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
+          {sections.map(s => (
+            <button key={s} onClick={() => scrollTo(s)}
+              className={`mobile-nav-item${activeSection === s ? ' active' : ''}`}>
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </button>
+          ))}
         </div>
       </motion.nav>
 
       {/* ── HERO ── */}
-      <section id="home" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 40px 80px', position: 'relative', overflow: 'hidden' }}>
+      <section id="home" className="hero-pad" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 40px 80px', position: 'relative', overflow: 'hidden' }}>
         <div className="hero-bg" />
         <div className="hero-grid" />
-        <div style={{ maxWidth: 700, textAlign: 'center', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 700, textAlign: 'center', position: 'relative', zIndex: 1, width: '100%' }}>
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.45, ease }} style={{ marginBottom: 28 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 16px', background: '#fff', border: '1px solid #E0E9FF', borderRadius: 99, fontSize: 12, fontWeight: 600, color: '#2563EB', boxShadow: '0 2px 12px rgba(37,99,235,0.1)', letterSpacing: '0.04em' }}>
               <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
@@ -220,7 +317,7 @@ export default function App() {
 
           <motion.h1
             initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease, delay: 0.12 }}
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(44px, 8vw, 72px)', fontWeight: 400, lineHeight: 1.08, letterSpacing: '-0.025em', marginBottom: 20, color: '#0D0D0D' }}>
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(36px, 8vw, 72px)', fontWeight: 400, lineHeight: 1.08, letterSpacing: '-0.025em', marginBottom: 20, color: '#0D0D0D' }}>
             Samsudeen Mohammed{' '}
             <em style={{ fontStyle: 'italic', background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Riyaz</em> . S
           </motion.h1>
@@ -233,7 +330,7 @@ export default function App() {
 
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.38, duration: 0.5 }}
-            style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 40 }}>
+            className="hero-pills">
             {[
               { icon: '📞', text: '+91 9382093530' },
               { icon: '✉️', text: 'samsudeenmohammedriyaz@gmail.com' },
@@ -247,7 +344,7 @@ export default function App() {
 
           <motion.div
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}
-            style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            className="hero-ctas">
             <motion.a href="https://github.com/samsudeenmohammedriyaz" target="_blank" rel="noopener noreferrer" className="btn-gh" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clipRule="evenodd" /></svg>
               View GitHub
@@ -273,15 +370,15 @@ export default function App() {
       </section>
 
       {/* ── ABOUT ── */}
-      <section id="about" style={{ padding: '96px 40px', background: '#fff' }}>
+      <section id="about" className="about-pad" style={{ padding: '96px 40px', background: '#fff' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <FadeUp style={{ textAlign: 'center', marginBottom: 48 }}>
             <div className="eyebrow" style={{ marginBottom: 10 }}>Introduction</div>
-            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(30px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 14 }}>About Me</h2>
+            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 14 }}>About Me</h2>
             <span className="accent-line" style={{ margin: '0 auto' }} />
           </FadeUp>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 240px', gap: 14, alignItems: 'stretch' }}>
+          <div className="about-grid">
             <FadeUp delay={0.08} style={{ display: 'flex' }}>
               <div className="card" style={{ padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
                 <p style={{ fontSize: 15, color: '#374151', lineHeight: 1.95, marginBottom: 16, letterSpacing: '0.02em' }}>
@@ -315,48 +412,50 @@ export default function App() {
       </section>
 
       {/* ── SKILLS ── */}
-      <section id="skills" style={{ padding: '112px 40px', background: '#FAFAFA' }}>
+      <section id="skills" className="section-pad" style={{ padding: '112px 40px', background: '#FAFAFA' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <FadeUp style={{ textAlign: 'center', marginBottom: 64 }}>
             <div className="eyebrow" style={{ marginBottom: 12 }}>Expertise</div>
-            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(30px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Skills & Technologies</h2>
+            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Skills & Technologies</h2>
             <span className="accent-line" style={{ margin: '0 auto' }} />
           </FadeUp>
-          <StaggerChildren delay={0.05} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
-            {skills.map((skill, i) => (
-              <motion.div key={i} variants={childVariant} className="card" style={{ padding: 28 }} whileHover={{ y: -5, borderColor: '#C7D7FD', boxShadow: '0 12px 40px rgba(37,99,235,0.09)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 20 }}>
-                  <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #EFF6FF, #F0F4FF)', border: '1px solid #DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#2563EB', fontFamily: "'DM Mono', monospace", flexShrink: 0 }}>{skill.icon}</div>
-                  <h3 style={{ fontSize: 13.5, fontWeight: 700, color: '#0D0D0D', letterSpacing: '0.02em' }}>{skill.category}</h3>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-                  {skill.items.map((item, j) => (
-                    <motion.div key={j} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: j * 0.06, duration: 0.4, ease }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 13.5, color: '#4B5563', letterSpacing: '0.02em' }}>
-                      <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#93C5FD', flexShrink: 0 }} />
-                      {item}
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
+          <StaggerChildren delay={0.05} style={{}}>
+            <div className="skills-grid">
+              {skills.map((skill, i) => (
+                <motion.div key={i} variants={childVariant} className="card" style={{ padding: 28 }} whileHover={{ y: -5, borderColor: '#C7D7FD', boxShadow: '0 12px 40px rgba(37,99,235,0.09)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 20 }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #EFF6FF, #F0F4FF)', border: '1px solid #DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#2563EB', fontFamily: "'DM Mono', monospace", flexShrink: 0 }}>{skill.icon}</div>
+                    <h3 style={{ fontSize: 13.5, fontWeight: 700, color: '#0D0D0D', letterSpacing: '0.02em' }}>{skill.category}</h3>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+                    {skill.items.map((item, j) => (
+                      <motion.div key={j} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: j * 0.06, duration: 0.4, ease }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 13.5, color: '#4B5563', letterSpacing: '0.02em' }}>
+                        <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#93C5FD', flexShrink: 0 }} />
+                        {item}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </StaggerChildren>
         </div>
       </section>
 
       {/* ── EXPERIENCE ── */}
-      <section id="experience" style={{ padding: '112px 40px', background: '#fff' }}>
+      <section id="experience" className="section-pad" style={{ padding: '112px 40px', background: '#fff' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <FadeUp style={{ textAlign: 'center', marginBottom: 64 }}>
             <div className="eyebrow" style={{ marginBottom: 12 }}>Career</div>
-            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(30px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Work Experience</h2>
+            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Work Experience</h2>
             <span className="accent-line" style={{ margin: '0 auto' }} />
           </FadeUp>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {experiences.map((exp, i) => (
               <FadeUp key={i} delay={i * 0.1}>
                 <div className="card" style={{ padding: 36 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 20, marginBottom: 26, flexWrap: 'wrap' }}>
+                  <div className="exp-header">
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                         <h3 style={{ fontSize: 17, fontWeight: 700, color: '#0D0D0D', letterSpacing: '0.01em' }}>{exp.role}</h3>
@@ -386,55 +485,56 @@ export default function App() {
       </section>
 
       {/* ── PROJECTS ── */}
-      <section id="projects" style={{ padding: '112px 40px', background: '#FAFAFA' }}>
+      <section id="projects" className="section-pad" style={{ padding: '112px 40px', background: '#FAFAFA' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <FadeUp style={{ textAlign: 'center', marginBottom: 64 }}>
             <div className="eyebrow" style={{ marginBottom: 12 }}>Portfolio</div>
-            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(30px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Featured Projects</h2>
+            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Featured Projects</h2>
             <span className="accent-line" style={{ margin: '0 auto' }} />
           </FadeUp>
-          <StaggerChildren delay={0.04} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
-            {projects.map((project, i) => (
-              <motion.div key={i} variants={childVariant} className="card" style={{ padding: 26, display: 'flex', flexDirection: 'column' }} whileHover={{ y: -6, boxShadow: '0 16px 48px rgba(37,99,235,0.1)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-                  <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #EFF6FF, #F0F4FF)', border: '1px solid #DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg style={{ width: 16, height: 16, color: '#2563EB' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+          <StaggerChildren delay={0.04} style={{}}>
+            <div className="projects-grid">
+              {projects.map((project, i) => (
+                <motion.div key={i} variants={childVariant} className="card" style={{ padding: 26, display: 'flex', flexDirection: 'column' }} whileHover={{ y: -6, boxShadow: '0 16px 48px rgba(37,99,235,0.1)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #EFF6FF, #F0F4FF)', border: '1px solid #DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg style={{ width: 16, height: 16, color: '#2563EB' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                    </div>
+                    {project.link ? (
+                      <motion.a href={project.link} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.08 }}
+                        style={{ width: 30, height: 30, borderRadius: 8, background: '#F5F5F5', border: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', textDecoration: 'none', transition: 'all 0.2s' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#EFF6FF'; e.currentTarget.style.borderColor = '#DBEAFE'; e.currentTarget.style.color = '#2563EB'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#F5F5F5'; e.currentTarget.style.borderColor = '#EBEBEB'; e.currentTarget.style.color = '#9CA3AF'; }}>
+                        <svg style={{ width: 13, height: 13 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                      </motion.a>
+                    ) : (
+                      <span style={{ fontSize: 10.5, color: '#B0B8C9', fontWeight: 600, padding: '4px 9px', background: '#F5F5F5', borderRadius: 6, fontFamily: "'DM Mono', monospace", letterSpacing: '0.04em' }}>Private</span>
+                    )}
                   </div>
-                  {project.link ? (
-                    <motion.a href={project.link} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.08 }}
-                      style={{ width: 30, height: 30, borderRadius: 8, background: '#F5F5F5', border: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', textDecoration: 'none', transition: 'all 0.2s' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#EFF6FF'; e.currentTarget.style.borderColor = '#DBEAFE'; e.currentTarget.style.color = '#2563EB'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = '#F5F5F5'; e.currentTarget.style.borderColor = '#EBEBEB'; e.currentTarget.style.color = '#9CA3AF'; }}>
-                      <svg style={{ width: 13, height: 13 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                    </motion.a>
-                  ) : (
-                    <span style={{ fontSize: 10.5, color: '#B0B8C9', fontWeight: 600, padding: '4px 9px', background: '#F5F5F5', borderRadius: 6, fontFamily: "'DM Mono', monospace", letterSpacing: '0.04em' }}>Private</span>
-                  )}
-                </div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: '#0D0D0D', marginBottom: 8, letterSpacing: '0.01em', lineHeight: 1.5 }}>{project.name}</h3>
-                <p style={{ fontSize: 12.5, color: '#6B7280', lineHeight: 1.85, flex: 1, marginBottom: 16, letterSpacing: '0.02em' }}>{project.desc}</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {project.tech.map((t, j) => <span key={j} className="tag">{t}</span>)}
-                </div>
-              </motion.div>
-            ))}
+                  <h3 style={{ fontSize: 14, fontWeight: 700, color: '#0D0D0D', marginBottom: 8, letterSpacing: '0.01em', lineHeight: 1.5 }}>{project.name}</h3>
+                  <p style={{ fontSize: 12.5, color: '#6B7280', lineHeight: 1.85, flex: 1, marginBottom: 16, letterSpacing: '0.02em' }}>{project.desc}</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {project.tech.map((t, j) => <span key={j} className="tag">{t}</span>)}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </StaggerChildren>
         </div>
       </section>
 
       {/* ── ACHIEVEMENTS ── */}
-      <section id="achievements" style={{ padding: '112px 40px', background: '#fff' }}>
+      <section id="achievements" className="section-pad" style={{ padding: '112px 40px', background: '#fff' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <FadeUp style={{ textAlign: 'center', marginBottom: 64 }}>
             <div className="eyebrow" style={{ marginBottom: 12 }}>Recognition</div>
-            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(30px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Achievements</h2>
+            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Achievements</h2>
             <span className="accent-line" style={{ margin: '0 auto' }} />
           </FadeUp>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div className="achievements-grid">
             {achievements.map((a, i) => (
               <FadeUp key={i} delay={i * 0.08}>
                 <motion.div className="card" style={{ padding: 30, height: '100%' }} whileHover={{ y: -4 }}>
-                  {/* <div style={{ fontSize: 28, marginBottom: 14, lineHeight: 1 }}>{a.icon}</div> */}
                   <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0D0D0D', marginBottom: 8, letterSpacing: '0.01em', lineHeight: 1.5 }}>{a.title}</h3>
                   <p style={{ fontSize: 13.5, color: '#6B7280', lineHeight: 1.85, letterSpacing: '0.02em' }}>{a.desc}</p>
                 </motion.div>
@@ -445,28 +545,30 @@ export default function App() {
       </section>
 
       {/* ── CONTACT ── */}
-      <section id="contact" style={{ padding: '112px 40px', background: '#FAFAFA' }}>
+      <section id="contact" className="section-pad" style={{ padding: '112px 40px', background: '#FAFAFA' }}>
         <div style={{ maxWidth: 620, margin: '0 auto' }}>
           <FadeUp style={{ textAlign: 'center', marginBottom: 56 }}>
             <div className="eyebrow" style={{ marginBottom: 12 }}>Get in Touch</div>
-            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(30px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Let's Connect</h2>
+            <h2 style={{ fontFamily: "'Instrument Serif', serif", fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 400, color: '#0D0D0D', letterSpacing: '-0.025em', marginBottom: 16 }}>Let's Connect</h2>
             <span className="accent-line" style={{ margin: '0 auto 18px' }} />
             <p style={{ fontSize: 15, color: '#6B7280', lineHeight: 1.85, letterSpacing: '0.02em' }}>Open for collaborations, exciting opportunities, and innovative projects.</p>
           </FadeUp>
 
-          <StaggerChildren delay={0.04} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 16 }}>
-            {[
-              { label: 'Email', value: 'samsudeenmohammedriyaz@gmail.com', link: 'mailto:samsudeenmohammedriyaz@gmail.com', icon: <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> },
-              { label: 'Phone', value: '+91 9382093530', link: 'tel:+919382093530', icon: <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg> },
-              { label: 'GitHub', value: 'samsudeenmohammedriyaz', link: 'https://github.com/samsudeenmohammedriyaz', icon: <svg style={{ width: 18, height: 18 }} fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clipRule="evenodd" /></svg> },
-            ].map((c, i) => (
-              <motion.a key={i} href={c.link} target={c.link.startsWith('http') ? '_blank' : undefined} rel={c.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                variants={childVariant} className="card" style={{ padding: '20px 14px', textAlign: 'center', textDecoration: 'none', display: 'block' }} whileHover={{ y: -4 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: '#EFF6FF', border: '1px solid #DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#2563EB' }}>{c.icon}</div>
-                <p style={{ fontSize: 10.5, fontWeight: 700, color: '#C4CADE', textTransform: 'uppercase', letterSpacing: '0.13em', marginBottom: 5, fontFamily: "'DM Mono', monospace" }}>{c.label}</p>
-                <p style={{ fontSize: 10.5, fontWeight: 600, color: '#374151', wordBreak: 'break-word', lineHeight: 1.65, letterSpacing: '0.02em' }}>{c.value}</p>
-              </motion.a>
-            ))}
+          <StaggerChildren delay={0.04} style={{}}>
+            <div className="contact-cards-grid">
+              {[
+                { label: 'Email', value: 'samsudeenmohammedriyaz@gmail.com', link: 'mailto:samsudeenmohammedriyaz@gmail.com', icon: <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> },
+                { label: 'Phone', value: '+91 9382093530', link: 'tel:+919382093530', icon: <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg> },
+                { label: 'GitHub', value: 'samsudeenmohammedriyaz', link: 'https://github.com/samsudeenmohammedriyaz', icon: <svg style={{ width: 18, height: 18 }} fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clipRule="evenodd" /></svg> },
+              ].map((c, i) => (
+                <motion.a key={i} href={c.link} target={c.link.startsWith('http') ? '_blank' : undefined} rel={c.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  variants={childVariant} className="card" style={{ padding: '20px 14px', textAlign: 'center', textDecoration: 'none', display: 'block' }} whileHover={{ y: -4 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: '#EFF6FF', border: '1px solid #DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#2563EB' }}>{c.icon}</div>
+                  <p style={{ fontSize: 10.5, fontWeight: 700, color: '#C4CADE', textTransform: 'uppercase', letterSpacing: '0.13em', marginBottom: 5, fontFamily: "'DM Mono', monospace" }}>{c.label}</p>
+                  <p style={{ fontSize: 10.5, fontWeight: 600, color: '#374151', wordBreak: 'break-word', lineHeight: 1.65, letterSpacing: '0.02em' }}>{c.value}</p>
+                </motion.a>
+              ))}
+            </div>
           </StaggerChildren>
 
           <FadeUp delay={0.18}>
@@ -487,7 +589,7 @@ export default function App() {
 
       {/* ── FOOTER ── */}
       <footer style={{ padding: '28px 40px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+        <div className="footer-inner">
           <div>
             <p style={{ fontSize: 13, color: '#6B7280', fontWeight: 500, marginBottom: 3, letterSpacing: '0.02em' }}>© 2026 Samsudeen Mohammed Riyaz S</p>
             <p style={{ fontSize: 12, color: '#C4CADE', letterSpacing: '0.02em' }}>Designed & Developed with passion</p>
