@@ -1,0 +1,2 @@
+import {useEffect,useState} from 'react'
+export default function useGithub(){const[repos,setRepos]=useState([]);useEffect(()=>{fetch('https://api.github.com/users/samsudeenmohammedriyaz/repos').then(r=>r.json()).then(setRepos)},[]);return repos;}

@@ -1,0 +1,2 @@
+import {Link} from 'react-router-dom'
+export default function Navbar(){return(<nav className='fixed w-full bg-white border-b z-50'><div className='max-w-6xl mx-auto px-6 py-4 flex justify-between'><Link to='/' className='font-bold'>Riyaz</Link><div className='space-x-6'><Link to='/about'>About</Link><Link to='/projects'>Projects</Link><Link to='/skills'>Skills</Link><Link to='/contact'>Contact</Link></div></div></nav>)}

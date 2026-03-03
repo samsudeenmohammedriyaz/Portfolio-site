@@ -1,0 +1,3 @@
+import PageTransition from '../components/PageTransition'
+import useGithub from '../hooks/useGithub'
+export default function Projects(){const repos=useGithub();return(<PageTransition><div className='pt-32 max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-6'>{repos.map(r=>(<div key={r.id} className='border p-5 rounded-lg'><h3 className='font-semibold'>{r.name}</h3><p className='text-sm text-gray-500'>{r.description}</p></div>))}</div></PageTransition>)}

@@ -1,0 +1,3 @@
+import PageTransition from '../components/PageTransition'
+import {resume} from '../data/resumeData'
+export default function Skills(){return(<PageTransition><div className='pt-32 max-w-4xl mx-auto px-6'><h2 className='text-3xl font-semibold mb-6'>Skills</h2><div className='flex flex-wrap gap-3'>{resume.skills.map((s,i)=>(<span key={i} className='px-4 py-2 border rounded-full text-sm'>{s}</span>))}</div></div></PageTransition>)}
